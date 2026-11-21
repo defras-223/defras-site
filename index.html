@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>DEFrAS — 2D Animation &amp; Art</title>
+    <style>
+        body {
+            background-color: #1b1d1a;
+            color: #d8ded3;
+            font-family: Tahoma, Verdana, "Courier New", monospace;
+            font-size: 13px;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 780px;
+            margin: 0 auto;
+            background-color: #262924;
+            border: 2px solid #4c5844;
+        }
+        .header {
+            background-color: #3e4637;
+            padding: 15px 20px;
+            border-bottom: 2px solid #4c5844;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #ffffff;
+            display: inline-block;
+            border: 2px solid #c4b550;
+            padding: 2px 10px;
+            background-color: #1b1d1a;
+        }
+        .logo span {
+            font-size: 20px;
+            color: #c4b550;
+            letter-spacing: 0;
+        }
+        .tagline {
+            margin-top: 6px;
+            color: #a0aa95;
+            font-size: 11px;
+        }
+        .nav {
+            background-color: #1f221d;
+            padding: 6px 20px;
+            border-bottom: 1px solid #4c5844;
+        }
+        .nav a {
+            color: #c4b550;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        .nav a:hover {
+            background-color: #c4b550;
+            color: #1b1d1a;
+        }
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .sidebar {
+            width: 210px;
+            vertical-align: top;
+            padding: 15px;
+            border-right: 1px solid #4c5844;
+            background-color: #21241f;
+        }
+        .content {
+            vertical-align: top;
+            padding: 15px 20px;
+        }
+        .box {
+            border: 1px solid #4c5844;
+            background-color: #1b1d1a;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .box-title {
+            background-color: #3e4637;
+            color: #ffffff;
+            padding: 4px 8px;
+            margin: -10px -10px 10px -10px;
+            font-weight: bold;
+            font-size: 12px;
+            border-bottom: 1px solid #4c5844;
+        }
+        .art-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .art-slot {
+            width: 155px;
+            height: 155px;
+            border: 2px inset #4c5844;
+            background-color: #141613;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6f7868;
+            font-size: 11px;
+            text-align: center;
+        }
+        .footer {
+            background-color: #1f221d;
+            border-top: 1px solid #4c5844;
+            padding: 8px 20px;
+            font-size: 11px;
+            color: #7c8575;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">DEF<span>r</span>AS</div>
+        <div class="tagline">// 2D ANIMATION &bull; CHARACTER RIGGING &bull; SKETCHBOOK</div>
+    </div>
+
+    <div class="nav">
+        <a href="#art">[ ARTWORK ]</a>
+        <a href="#anim">[ ANIMATIONS ]</a>
+        <a href="#wip">[ WIP / RIGS ]</a>
+        <a href="#links">[ LINKS ]</a>
+    </div>
+
+    <table class="main-table">
+        <tr>
+            <td class="sidebar">
+                <div class="box">
+                    <div class="box-title">STATUS.TXT</div>
+                    <b>Tools:</b> Tahoma2D, Linux<br>
+                    <b>Focus:</b> 2D Puppet Rigs &amp; Sketches<br><br>
+                    <i>"Show your work."</i>
+                </div>
+
+                <div class="box" id="links">
+                    <div class="box-title">LINKS</div>
+                    &raquo; <a href="#" style="color:#c4b550;">Pinterest</a><br>
+                    &raquo; <a href="#" style="color:#c4b550;">Telegram</a><br>
+                    &raquo; <a href="#" style="color:#c4b550;">YouTube</a>
+                </div>
+            </td>
+
+            <td class="content">
+                <div class="box">
+                    <div class="box-title">WELCOME TO DEFRAS.ART</div>
+                    Привет! Это мой личный архив набросков, 2D-анимаций и экспериментов с риггингом персонажей.
+                </div>
+
+                <div class="box" id="art">
+                    <div class="box-title">GALLERY / SKETCHES</div>
+                    <div class="art-grid">
+                        <div class="art-slot">[ art_01.png ]<br>добавь картинку</div>
+                        <div class="art-slot">[ anim_01.gif ]<br>добавь гифку</div>
+                        <div class="art-slot">[ rig_test.gif ]<br>тест костей</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        &copy; 2026 DEFrAS &bull; Hand-coded in HTML/CSS &bull; Best viewed at 1024x768 :)
+    </div>
+</div>
+
+</body>
+</html>
