@@ -1,4 +1,4 @@
-const DB = "https://" + "boltalka-16a6a-default-rtdb" + ".europe-west1." + "firebasedatabase.app/messages";
+const DB = "https://boltalka-16a6a-default-rtdb.europe-west1.firebasedatabase.app/messages";
 let sec = localStorage.getItem("defras_admin_secret") || "";
 
 const f = document.querySelector(".bottom-bar");
