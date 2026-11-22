@@ -187,23 +187,6 @@
     window.addEventListener("mouseup", () => { dragging = false; });
     syncThumb();
     function openArt(l){document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
-    function addMsgDOM(txt) {
-      const d = document.createElement("div");
-      d.innerHTML = '<div class="msg-header"><div class="msg-avatar">◈</div><span>guest :</span></div><div class="msg-text"></div>';
-      d.querySelector(".msg-text").textContent = txt;
-      document.getElementById("chatList").appendChild(d);
-    }
-    const savedMsgs = JSON.parse(localStorage.getItem("defras_chat") || "[]");
-    savedMsgs.forEach(addMsgDOM);
-    function sendMsg(e) {
-      e.preventDefault();
-      const i = document.getElementById("msgInput"), v = i.value.trim();
-      if (!v) return;
-      addMsgDOM(v);
-      savedMsgs.push(v);
-      localStorage.setItem("defras_chat", JSON.stringify(savedMsgs));
-      i.value = "";
-    }
-  </script>
+    </script>
 <script src="/assets/chat.js"></script></body>
 </html>

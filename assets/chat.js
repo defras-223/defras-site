@@ -102,3 +102,5 @@ setInterval(loadMessages, 4000);
 
 form.removeAttribute("onsubmit");
 form.addEventListener("submit", window.sendMsg);
+
+form.querySelector("button").onclick = window.sendMsg;
