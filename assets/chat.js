@@ -460,3 +460,13 @@ setInterval(() => {
 }, 700);
 
 let tw=220,cw=220,dg=0;const st=document.querySelector(".red-stripe"),rs=document.querySelector(".right-sidebar"),bb=document.querySelector(".bottom-bar");if(st&&rs&&bb){st.onmousedown=e=>{dg=1;e.preventDefault();};window.addEventListener("mousemove",e=>{if(dg)tw=Math.min(620,Math.max(220,window.innerWidth-e.clientX));});window.addEventListener("mouseup",()=>{if(dg){dg=0;if(Math.abs(tw-440)<60)tw=440;else if(tw<260)tw=220;}});(function loop(){if(window.innerWidth>850){cw+=(tw-cw)*0.15;rs.style.width=cw+"px";bb.style.right=(cw+15)+"px";}requestAnimationFrame(loop);})();}
+
+// Двухуровневая тень по высоте: длинная (28px) на фоне ПОД карточками, короткая (11px) НАД карточками
+const bgShadow = document.createElement("div");
+bgShadow.style.cssText = "position:fixed;top:118px;bottom:0;width:28px;background:rgba(54,62,125,0.34);mix-blend-mode:multiply;pointer-events:none;z-index:1;";
+document.body.appendChild(bgShadow);
+(function syncShadow() {
+  const rs = document.querySelector(".right-sidebar");
+  if (rs && window.innerWidth > 850) bgShadow.style.right = rs.offsetWidth + "px";
+  requestAnimationFrame(syncShadow);
+})();
