@@ -96,8 +96,8 @@ async function load() {
     const r = await fetch(DB + ".json");
     const data = await r.json();
     const list = document.getElementById("chatList");
-    list.innerHTML = `<div><div class="msg-header"><div class="msg-avatar">⊗</div><span>1×T^1 :</span></div><div class="msg-text">Hey!</div></div><div><div class="msg-header"><div class="msg-avatar">⊘</div><span>11×1 :</span></div><div class="msg-text">Hello</div></div>`;
-    if (!data || data.error) return;
+    list.innerHTML = "";
+    if (!data || data.error) { allEntries = []; archBtn.textContent = "ARCHIVE (0) [+]"; if (archModal.style.display === "flex") renderArchive(); return; }
     allEntries = Object.entries(data);
     archBtn.textContent = `ARCHIVE (${allEntries.length}) [+]`;
     allEntries.slice(-20).forEach(item => list.appendChild(makeMsgNode(item)));
@@ -390,31 +390,47 @@ unbanBtn.style.cssText = "background:#0a0a0a;color:#4caf50;border:2px solid #4ca
 unbanBtn.onclick = () => { banUser(targetUid, 0); modBox.style.display = "none"; };
 document.getElementById("modForm").lastElementChild.insertBefore(unbanBtn, document.getElementById("modCancel"));
 
-// Выдвижная стрелочка « / » на красной полосе чата + возврат крестика × для гостевых постов
+
+// Перетаскиваемая шторка чата с белым хватом (как скроллбар слева) и примагничиванием к 420px
 const stripe = document.querySelector(".red-stripe");
 const rightSide = document.querySelector(".right-sidebar");
 const bottomBar = document.querySelector(".bottom-bar");
-let chatExpanded = false;
 
 if (stripe && rightSide) {
-  stripe.style.cssText += "display:flex;align-items:center;justify-content:center;cursor:pointer;color:#0a0a0a;font-weight:bold;font-size:16px;user-select:none;";
-  stripe.textContent = "«";
-  stripe.title = "Expand / Collapse chat";
-  rightSide.style.transition = "width 0.2s ease";
-  bottomBar.style.transition = "right 0.2s ease";
+  stripe.textContent = "";
+  stripe.style.cssText = "background:var(--red);border-right:4px solid var(--black);position:relative;cursor:ew-resize;user-select:none;";
+  const grip = document.createElement("div");
+  grip.style.cssText = "width:10px;height:42px;background:#f4f4f4;border:2px solid #0a0a0a;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);";
+  stripe.appendChild(grip);
 
-  stripe.onclick = () => {
-    chatExpanded = !chatExpanded;
-    if (window.innerWidth > 850) {
-      rightSide.style.width = chatExpanded ? "430px" : "220px";
-      rightSide.style.marginLeft = chatExpanded ? "-210px" : "0px";
-      bottomBar.style.right = chatExpanded ? "445px" : "235px";
-    }
-    stripe.textContent = chatExpanded ? "»" : "«";
-  };
+  let draggingChat = false;
+  function setChatWidth(w, smooth) {
+    if (window.innerWidth <= 850) return;
+    w = Math.min(580, Math.max(220, w));
+    rightSide.style.transition = smooth ? "width 0.18s ease, margin-left 0.18s ease" : "none";
+    bottomBar.style.transition = smooth ? "right 0.18s ease" : "none";
+    rightSide.style.width = w + "px";
+    rightSide.style.marginLeft = -(w - 220) + "px";
+    bottomBar.style.right = (w + 15) + "px";
+  }
+
+  stripe.addEventListener("mousedown", (e) => { draggingChat = true; e.preventDefault(); });
+  window.addEventListener("mousemove", (e) => {
+    if (!draggingChat) return;
+    setChatWidth(window.innerWidth - e.clientX, false);
+  });
+  window.addEventListener("mouseup", () => {
+    if (!draggingChat) return;
+    draggingChat = false;
+    const curW = rightSide.offsetWidth;
+    if (Math.abs(curW - 420) < 45) setChatWidth(420, true);
+    else if (curW < 250) setChatWidth(220, true);
+  });
+  stripe.addEventListener("dblclick", () => {
+    setChatWidth(rightSide.offsetWidth > 300 ? 220 : 420, true);
+  });
 }
 
-// Гарантированный возврат кнопки удаления × у гостевых сообщений в админке
 setInterval(() => {
   if (!sec) return;
   document.querySelectorAll(".msg-header").forEach(hdr => {
