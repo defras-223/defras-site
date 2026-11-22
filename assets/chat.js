@@ -391,7 +391,7 @@ unbanBtn.onclick = () => { banUser(targetUid, 0); modBox.style.display = "none";
 document.getElementById("modForm").lastElementChild.insertBefore(unbanBtn, document.getElementById("modCancel"));
 
 
-// Перетаскиваемая шторка чата с белым хватом (как скроллбар слева) и примагничиванием к 420px
+// Перетаскиваемая шторка чата (правый край приклеен к экрану, левый плавно ходит и магнитится к 440px)
 const stripe = document.querySelector(".red-stripe");
 const rightSide = document.querySelector(".right-sidebar");
 const bottomBar = document.querySelector(".bottom-bar");
@@ -406,11 +406,15 @@ if (stripe && rightSide) {
   let draggingChat = false;
   function setChatWidth(w, smooth) {
     if (window.innerWidth <= 850) return;
-    w = Math.min(580, Math.max(220, w));
-    rightSide.style.transition = smooth ? "width 0.18s ease, margin-left 0.18s ease" : "none";
-    bottomBar.style.transition = smooth ? "right 0.18s ease" : "none";
+    w = Math.min(620, Math.max(220, w));
+    rightSide.style.position = "fixed";
+    rightSide.style.right = "0";
+    rightSide.style.top = "118px";
+    rightSide.style.height = "calc(100vh - 118px)";
+    rightSide.style.zIndex = "45";
+    rightSide.style.transition = smooth ? "width 0.16s ease-out" : "none";
+    bottomBar.style.transition = smooth ? "right 0.16s ease-out" : "none";
     rightSide.style.width = w + "px";
-    rightSide.style.marginLeft = -(w - 220) + "px";
     bottomBar.style.right = (w + 15) + "px";
   }
 
@@ -423,11 +427,11 @@ if (stripe && rightSide) {
     if (!draggingChat) return;
     draggingChat = false;
     const curW = rightSide.offsetWidth;
-    if (Math.abs(curW - 420) < 45) setChatWidth(420, true);
-    else if (curW < 250) setChatWidth(220, true);
+    if (Math.abs(curW - 440) < 55) setChatWidth(440, true);
+    else if (curW < 260) setChatWidth(220, true);
   });
   stripe.addEventListener("dblclick", () => {
-    setChatWidth(rightSide.offsetWidth > 300 ? 220 : 420, true);
+    setChatWidth(rightSide.offsetWidth > 300 ? 220 : 440, true);
   });
 }
 
@@ -443,7 +447,7 @@ setInterval(() => {
         btn.className = "del-fix";
         btn.textContent = "×";
         btn.style.cssText = "margin-left:auto;background:#0a0a0a;color:#cf1717;border:none;cursor:pointer;font-weight:bold;padding:0 5px;";
-        btn.onclick = () => delMsg(found[0]);
+        btn.onclick = () => delMsg(found);
         hdr.appendChild(btn);
       }
     }
