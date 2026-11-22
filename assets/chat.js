@@ -186,3 +186,66 @@ f.onsubmit = async (e) => {
     cdBadge.style.color = "#cf1717";
   }
 };
+
+// Прокачанный компактный архив с группировкой по датам, счетчиком за день и вкладками ALL / DEFrAS / GUESTS
+let archTab = "all";
+archModal.innerHTML = `<div style="background:#d45b1e;border:4px solid #0a0a0a;width:100%;max-width:600px;max-height:84vh;display:flex;flex-direction:column;padding:12px;gap:8px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;background:#0a0a0a;color:#f4f4f4;padding:6px 10px;font-weight:bold;font-size:13px;">
+    <span id="archCount">// CHAT ARCHIVE</span>
+    <button id="archClose" style="background:#cf1717;color:#0a0a0a;border:none;padding:2px 8px;font-weight:bold;cursor:pointer;">X</button>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <button class="atab" data-t="all" style="background:#0a0a0a;color:#f4f4f4;border:2px solid #0a0a0a;padding:3px 8px;font-family:inherit;font-weight:bold;font-size:12px;cursor:pointer;">ALL</button>
+    <button class="atab" data-t="admin" style="background:#cf1717;color:#0a0a0a;border:2px solid #0a0a0a;padding:3px 8px;font-family:inherit;font-weight:bold;font-size:12px;cursor:pointer;">DEFrAS ★</button>
+    <button class="atab" data-t="guest" style="background:#9a9a9a;color:#0a0a0a;border:2px solid #0a0a0a;padding:3px 8px;font-family:inherit;font-weight:bold;font-size:12px;cursor:pointer;">GUESTS</button>
+    <input type="text" id="archSearch" placeholder="Search text / nick / HH:MM..." style="flex:1;min-width:140px;background:#0a0a0a;color:#f4f4f4;border:2px solid #0a0a0a;padding:4px 8px;font-family:inherit;font-weight:bold;font-size:12px;" />
+  </div>
+  <div id="archList" style="overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding-right:4px;"></div>
+</div>`;
+
+document.getElementById("archClose").onclick = () => { archModal.style.display = "none"; };
+document.getElementById("archSearch").oninput = renderArchive;
+archModal.querySelectorAll(".atab").forEach(b => {
+  b.onclick = () => {
+    archTab = b.dataset.t;
+    archModal.querySelectorAll(".atab").forEach(x => x.style.outline = x === b ? "2px solid #f4f4f4" : "none");
+    renderArchive();
+  };
+});
+
+renderArchive = function() {
+  const q = document.getElementById("archSearch").value.toLowerCase();
+  const box = document.getElementById("archList");
+  const filtered = allEntries.filter(([_, m]) => {
+    if (archTab === "admin" && !m.isAdmin) return false;
+    if (archTab === "guest" && m.isAdmin) return false;
+    const tStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
+    return (m.text || "").toLowerCase().includes(q) || (m.author || "").toLowerCase().includes(q) || tStr.includes(q);
+  });
+  document.getElementById("archCount").textContent = `// ARCHIVE (${filtered.length} total)`;
+  box.innerHTML = "";
+
+  const groups = {};
+  filtered.forEach(item => {
+    const dKey = item[1].ts ? new Date(item[1].ts).toLocaleDateString("ru-RU") : "Unknown date";
+    (groups[dKey] = groups[dKey] || []).push(item);
+  });
+
+  Object.entries(groups).forEach(([date, items]) => {
+    const hdr = document.createElement("div");
+    hdr.style.cssText = "background:#0a0a0a;color:#eb6a28;padding:3px 8px;font-size:12px;font-weight:bold;margin-top:4px;display:flex;justify-content:space-between;";
+    hdr.innerHTML = `<span>// ${date}</span><span>${items.length} msg</span>`;
+    box.appendChild(hdr);
+
+    items.forEach(([id, m]) => {
+      const row = document.createElement("div");
+      row.style.cssText = "background:rgba(10,10,10,0.16);border-left:3px solid " + (m.isAdmin ? "#cf1717" : "#0a0a0a") + ";padding:4px 8px;font-size:12px;";
+      const tStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "--:--";
+      const nick = m.isAdmin ? `<b style="background:#0a0a0a;color:#cf1717;padding:0 4px;">DEFrAS ★</b>` : `<b>${(m.author || "guest").replace(/</g, "&lt;")}</b>`;
+      const del = sec ? `<button onclick="delMsg('${id}')" style="float:right;background:#0a0a0a;color:#cf1717;border:none;cursor:pointer;font-weight:bold;padding:0 5px;">×</button>` : "";
+      row.innerHTML = `<div><span style="opacity:0.8;">[${tStr}]</span> ${nick}: ${del}</div><div style="color:#f4f4f4;font-weight:bold;margin-top:2px;word-break:break-word;"></div>`;
+      row.lastElementChild.textContent = m.text;
+      box.appendChild(row);
+    });
+  });
+};
