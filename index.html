@@ -62,11 +62,11 @@
       <div class="ph" style="display:none;">DEFrAS [assets/logo-defras.png]</div>
     </div>
     <nav class="top-nav">
-      <a href="/for-you">for you</a>
-      <a href="/newest">the newest</a>
+      <a href="/archive" onclick="wipToast(event, 'for you')">for you</a>
+      <a href="/archive" onclick="wipToast(event, 'the newest')">the newest</a>
       <a href="/archive" class="active">Archive</a>
-      <a href="/honor-board">honor board</a>
-      <a href="/ideas">your ideas</a>
+      <a href="/archive" onclick="wipToast(event, 'honor board')">honor board</a>
+      <a href="/archive" onclick="wipToast(event, 'your ideas')">your ideas</a>
     </nav>
   </header>
 
@@ -157,7 +157,17 @@
     </div>
   </div>
 
+  <div id="wipToast" style="display:none;position:fixed;top:132px;right:235px;background:#0a0a0a;color:#f4f4f4;border:3px solid #cf1717;padding:10px 14px;font-weight:bold;font-size:13px;z-index:90;box-shadow:4px 4px 0 #0a0a0a;"></div>
   <script>
+    let wipTimer;
+    function wipToast(e, name) {
+      e.preventDefault();
+      const t = document.getElementById("wipToast");
+      t.textContent = "// " + name + " — раздел пока в разработке (WIP)";
+      t.style.display = "block";
+      clearTimeout(wipTimer);
+      wipTimer = setTimeout(() => { t.style.display = "none"; }, 2600);
+    }
     const rail = document.querySelector(".rail-line"), thumb = document.getElementById("railThumb");
     function syncThumb() {
       const d = document.documentElement.scrollHeight - window.innerHeight;
