@@ -308,3 +308,26 @@ f.onsubmit = async (e) => {
   else { lastSentText = v; if (!sec) { cdLeft = 4; cdBadge.textContent = "4s"; cdBadge.style.color = "#cf1717"; } }
   await load(); chatPanel.scrollTop = chatPanel.scrollHeight;
 };
+// Компактная модерация по клику на UID пользователя (любое время мута в минутах или вечный бан)
+window.openMod = (uid) => {
+  if (!sec || !uid) return;
+  const ans = prompt(`Moderate [${uid}]\nEnter mute minutes (1 = 1m, 1440 = 1d, 0 = UNBAN)\nor type "ban" for permaban:`, "15");
+  if (ans === null) return;
+  const v = ans.trim().toLowerCase();
+  if (v === "ban") banUser(uid, 52560000);
+  else if (!isNaN(Number(v))) banUser(uid, Number(v));
+};
+setInterval(() => {
+  if (!sec) return;
+  document.querySelectorAll(".msg-header span").forEach(sp => {
+    if (sp.textContent.startsWith("u_") && !sp.dataset.bound) {
+      sp.dataset.bound = "1";
+      sp.style.cssText = "background:#0a0a0a;color:#eb6a28;padding:0 4px;font-size:10px;cursor:pointer;border:1px solid #cf1717;";
+      sp.title = "Click to Mute / Ban";
+      const uid = sp.textContent.trim();
+      sp.nextSibling && (sp.nextSibling.textContent = "");
+      sp.nextSibling && sp.nextSibling.nextSibling && (sp.nextSibling.nextSibling.textContent = "");
+      sp.onclick = () => openMod(uid);
+    }
+  });
+}, 800);
