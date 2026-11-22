@@ -139,3 +139,50 @@ f.onsubmit = async (e) => {
 
 load();
 setInterval(load, 4000);
+
+// Живой таймер 4 -> 0 в строке ввода и плашка предупреждения при спаме
+const cdBadge = document.createElement("span");
+cdBadge.textContent = "0s";
+cdBadge.style.cssText = "color:#9a9a9a;font-size:13px;font-weight:bold;margin-right:8px;min-width:24px;text-align:right;";
+f.insertBefore(cdBadge, f.querySelector("button"));
+
+const spamToast = document.createElement("div");
+spamToast.style.cssText = "display:none;position:fixed;bottom:64px;right:235px;background:#0a0a0a;color:#cf1717;border:2px solid #cf1717;padding:6px 10px;font-weight:bold;font-size:12px;z-index:95;";
+document.body.appendChild(spamToast);
+
+let cdLeft = 0, spamTimer;
+function showSpamWarn(msg) {
+  spamToast.textContent = msg;
+  spamToast.style.display = "block";
+  clearTimeout(spamTimer);
+  spamTimer = setTimeout(() => { spamToast.style.display = "none"; }, 2200);
+}
+
+setInterval(() => {
+  if (cdLeft > 0) {
+    cdLeft--;
+    cdBadge.textContent = cdLeft + "s";
+    cdBadge.style.color = cdLeft > 0 ? "#cf1717" : "#9a9a9a";
+  }
+}, 1000);
+
+const prevSubmit = f.onsubmit;
+f.onsubmit = async (e) => {
+  e.preventDefault();
+  const v = mIn.value.trim();
+  if (!v) return;
+  if (!sec && cdLeft > 0) {
+    showSpamWarn(`// Anti-spam: wait ${cdLeft}s`);
+    return;
+  }
+  if (!sec && v === lastSentText) {
+    showSpamWarn("// Anti-spam: duplicate message");
+    return;
+  }
+  await prevSubmit(e);
+  if (!sec && lastSentText === v) {
+    cdLeft = 4;
+    cdBadge.textContent = "4s";
+    cdBadge.style.color = "#cf1717";
+  }
+};
