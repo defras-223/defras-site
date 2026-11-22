@@ -391,47 +391,52 @@ unbanBtn.onclick = () => { banUser(targetUid, 0); modBox.style.display = "none";
 document.getElementById("modForm").lastElementChild.insertBefore(unbanBtn, document.getElementById("modCancel"));
 
 
-// Перетаскиваемая шторка чата (правый край приклеен к экрану, левый плавно ходит и магнитится к 440px)
+// Плавная физика отставания (lerp-инерция) для шторки чата, нижней плашки и левого бегунка
 const stripe = document.querySelector(".red-stripe");
 const rightSide = document.querySelector(".right-sidebar");
 const bottomBar = document.querySelector(".bottom-bar");
 
-if (stripe && rightSide) {
+if (stripe && rightSide && bottomBar) {
   stripe.textContent = "";
   stripe.style.cssText = "background:var(--red);border-right:4px solid var(--black);position:relative;cursor:ew-resize;user-select:none;";
   const grip = document.createElement("div");
   grip.style.cssText = "width:10px;height:42px;background:#f4f4f4;border:2px solid #0a0a0a;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);";
   stripe.appendChild(grip);
 
-  let draggingChat = false;
-  function setChatWidth(w, smooth) {
-    if (window.innerWidth <= 850) return;
-    w = Math.min(620, Math.max(220, w));
-    rightSide.style.position = "fixed";
-    rightSide.style.right = "0";
-    rightSide.style.top = "118px";
-    rightSide.style.height = "calc(100vh - 118px)";
-    rightSide.style.zIndex = "45";
-    rightSide.style.transition = smooth ? "width 0.16s ease-out" : "none";
-    bottomBar.style.transition = smooth ? "right 0.16s ease-out" : "none";
-    rightSide.style.width = w + "px";
-    bottomBar.style.right = (w + 15) + "px";
+  rightSide.style.position = "fixed";
+  rightSide.style.right = "0";
+  rightSide.style.top = "118px";
+  rightSide.style.height = "calc(100vh - 118px)";
+  rightSide.style.zIndex = "45";
+  rightSide.style.transition = "none";
+  bottomBar.style.transition = "none";
+
+  let targetW = 220, currentW = 220, draggingChat = false;
+
+  function tickPhysics() {
+    if (window.innerWidth > 850) {
+      currentW += (targetW - currentW) * 0.22;
+      if (Math.abs(targetW - currentW) < 0.2) currentW = targetW;
+      rightSide.style.width = currentW.toFixed(1) + "px";
+      bottomBar.style.right = (currentW + 15).toFixed(1) + "px";
+    }
+    requestAnimationFrame(tickPhysics);
   }
+  requestAnimationFrame(tickPhysics);
 
   stripe.addEventListener("mousedown", (e) => { draggingChat = true; e.preventDefault(); });
   window.addEventListener("mousemove", (e) => {
     if (!draggingChat) return;
-    setChatWidth(window.innerWidth - e.clientX, false);
+    targetW = Math.min(620, Math.max(220, window.innerWidth - e.clientX));
   });
   window.addEventListener("mouseup", () => {
     if (!draggingChat) return;
     draggingChat = false;
-    const curW = rightSide.offsetWidth;
-    if (Math.abs(curW - 440) < 55) setChatWidth(440, true);
-    else if (curW < 260) setChatWidth(220, true);
+    if (Math.abs(targetW - 440) < 60) targetW = 440;
+    else if (targetW < 260) targetW = 220;
   });
   stripe.addEventListener("dblclick", () => {
-    setChatWidth(rightSide.offsetWidth > 300 ? 220 : 440, true);
+    targetW = targetW > 300 ? 220 : 440;
   });
 }
 
