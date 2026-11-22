@@ -1,176 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="p:domain_verify" content="158cc9ae658e4ac9b16065582bf5815c"/>
-    <meta charset="UTF-8">
-    <title>DEFrAS — 2D Animation &amp; Art</title>
-    <style>
-        body {
-            background-color: #1b1d1a;
-            color: #d8ded3;
-            font-family: Tahoma, Verdana, "Courier New", monospace;
-            font-size: 13px;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            width: 780px;
-            margin: 0 auto;
-            background-color: #262924;
-            border: 2px solid #4c5844;
-        }
-        .header {
-            background-color: #3e4637;
-            padding: 15px 20px;
-            border-bottom: 2px solid #4c5844;
-        }
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: #ffffff;
-            display: inline-block;
-            border: 2px solid #c4b550;
-            padding: 2px 10px;
-            background-color: #1b1d1a;
-        }
-        .logo span {
-            font-size: 20px;
-            color: #c4b550;
-            letter-spacing: 0;
-        }
-        .tagline {
-            margin-top: 6px;
-            color: #a0aa95;
-            font-size: 11px;
-        }
-        .nav {
-            background-color: #1f221d;
-            padding: 6px 20px;
-            border-bottom: 1px solid #4c5844;
-        }
-        .nav a {
-            color: #c4b550;
-            text-decoration: none;
-            margin-right: 15px;
-            font-weight: bold;
-        }
-        .nav a:hover {
-            background-color: #c4b550;
-            color: #1b1d1a;
-        }
-        .main-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .sidebar {
-            width: 210px;
-            vertical-align: top;
-            padding: 15px;
-            border-right: 1px solid #4c5844;
-            background-color: #21241f;
-        }
-        .content {
-            vertical-align: top;
-            padding: 15px 20px;
-        }
-        .box {
-            border: 1px solid #4c5844;
-            background-color: #1b1d1a;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-        .box-title {
-            background-color: #3e4637;
-            color: #ffffff;
-            padding: 4px 8px;
-            margin: -10px -10px 10px -10px;
-            font-weight: bold;
-            font-size: 12px;
-            border-bottom: 1px solid #4c5844;
-        }
-        .art-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .art-slot {
-            width: 155px;
-            height: 155px;
-            border: 2px inset #4c5844;
-            background-color: #141613;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6f7868;
-            font-size: 11px;
-            text-align: center;
-        }
-        .footer {
-            background-color: #1f221d;
-            border-top: 1px solid #4c5844;
-            padding: 8px 20px;
-            font-size: 11px;
-            color: #7c8575;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="p:domain_verify" content="158cc9ae658e4ac9b16065582bf5815c"/>
+  <title>DEFrAS — Archive</title>
+  <style>
+    :root { --orange:#eb6a28; --red:#cf1717; --gray:#9a9a9a; --black:#0a0a0a; --white:#f4f4f4; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background-color:var(--orange); background-image:radial-gradient(#0a0a0a 0.75px, transparent 0.75px); background-size:18px 18px; color:var(--black); font-family:"Courier New",monospace; min-height:100vh; }
+    .topbar { display:grid; grid-template-columns:1fr 220px 190px; height:118px; border-bottom:4px solid var(--black); position:sticky; top:0; z-index:50; }
+    .banner-slot { background:var(--red); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .logo-slot { background:var(--gray); border-left:4px solid var(--black); border-right:4px solid var(--black); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .banner-slot img, .logo-slot img { width:100%; height:100%; object-fit:cover; display:block; }
+    .ph { font-weight:bold; text-align:center; padding:8px; font-size:20px; }
+    .top-nav { background:var(--gray); display:flex; flex-direction:column; justify-content:center; padding:4px 8px; }
+    .top-nav a { display:block; text-decoration:none; color:var(--black); font-size:13px; font-weight:bold; line-height:1.35; padding:1px 6px; border-bottom:2px solid var(--black); }
+    .top-nav a:last-child { border-bottom:none; }
+    .top-nav a:hover, .top-nav a.active { background:var(--black); color:var(--white); }
+    .workspace { display:grid; grid-template-columns:185px 1fr 220px; min-height:calc(100vh - 118px); }
+    .left-sidebar { padding:14px 12px; display:flex; flex-direction:column; justify-content:space-between; position:sticky; top:118px; height:calc(100vh - 118px); }
+    .scroll-rail { display:flex; flex-direction:column; align-items:flex-start; gap:6px; flex:1; margin-bottom:12px; }
+    .rail-btn { background:none; border:none; color:var(--white); font-size:20px; font-weight:bold; cursor:pointer; }
+    .rail-line { cursor:pointer; user-select:none; width:6px; flex:1; background:var(--black); margin-left:6px; position:relative; }
+    .rail-thumb { width:12px; height:36px; background:var(--white); border:2px solid var(--black); position:absolute; left:-3px; top:0; }
+    .archive-box { background:var(--black); padding:10px; }
+    .archive-box-title { color:var(--white); font-size:16px; font-weight:bold; margin-bottom:8px; }
+    .archive-links { display:flex; flex-direction:column; gap:6px; }
+    .archive-links a { display:block; background:var(--red); color:var(--black); text-decoration:none; font-weight:bold; font-size:14px; padding:2px 6px; }
+    .archive-links a:hover { background:var(--white); transform:translateX(3px); }
+    .gallery-feed { padding:20px 24px 90px; display:flex; flex-direction:column; gap:48px; }
+    .archive-section { scroll-margin-top:140px; }
+    .section-tag { display:inline-block; background:var(--black); color:var(--white); font-size:14px; font-weight:bold; padding:4px 12px; margin-bottom:14px; }
+    .art-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .art-card { aspect-ratio:16/10; background:var(--black); border:3px solid var(--black); outline:2px solid var(--white); outline-offset:-6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#777; font-size:13px; transition:0.15s; }
+    .art-card:hover { transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--red); }
+    .right-sidebar { display:grid; grid-template-columns:18px 1fr; border-left:4px solid var(--black); position:sticky; top:118px; height:calc(100vh - 118px); }
+    .red-stripe { background:var(--red); border-right:4px solid var(--black); }
+    .chat-panel { padding:14px 12px 70px; overflow-y:auto; background-color:#d45b1e; }
+    .chat-messages { display:flex; flex-direction:column; gap:18px; }
+    .msg-header { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:bold; font-size:15px; }
+    .msg-avatar { width:26px; height:26px; border-radius:50%; border:2px solid var(--white); display:flex; align-items:center; justify-content:center; font-size:12px; }
+    .msg-text { color:var(--white); font-size:18px; font-weight:bold; padding-left:34px; margin-top:4px; }
+    .bottom-bar { position:fixed; bottom:14px; left:205px; right:235px; height:40px; background:var(--black); display:flex; align-items:center; padding:0 12px; z-index:60; }
+    .bottom-bar input { flex:1; background:transparent; border:none; outline:none; color:var(--white); font-family:inherit; font-size:16px; font-weight:bold; }
+    .bottom-bar button { background:none; border:none; color:var(--white); font-size:24px; font-weight:bold; cursor:pointer; }
+    .lightbox { display:none; position:fixed; inset:0; background:rgba(10,10,10,.9); z-index:100; align-items:center; justify-content:center; padding:24px; }
+    .lightbox.open { display:flex; }
+    .lightbox-box { background-color:var(--orange); background-image:radial-gradient(#0a0a0a 0.75px, transparent 0.75px); background-size:18px 18px; border:4px solid var(--black); padding:20px; max-width:720px; width:100%; text-align:center; }
+  </style>
 </head>
 <body>
+  <header class="topbar">
+    <div class="banner-slot">
+      <img src="assets/banner-left.png" alt="My new site" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"/>
+      <div class="ph" style="display:none;">My new site (=^･ω･^=) [assets/banner-left.png]</div>
+    </div>
+    <div class="logo-slot">
+      <img src="assets/logo-defras.png" alt="DEFrAS" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"/>
+      <div class="ph" style="display:none;">DEFrAS [assets/logo-defras.png]</div>
+    </div>
+    <nav class="top-nav">
+      <a href="/for-you">for you</a>
+      <a href="/newest">the newest</a>
+      <a href="/archive" class="active">Archive</a>
+      <a href="/honor-board">honor board</a>
+      <a href="/ideas">your ideas</a>
+    </nav>
+  </header>
 
-<div class="container">
-    <div class="header">
-        <div class="logo">DEF<span>r</span>AS</div>
-        <div class="tagline">// 2D ANIMATION &bull; CHARACTER RIGGING &bull; SKETCHBOOK</div>
+  <main class="workspace">
+    <aside class="left-sidebar">
+      <div class="scroll-rail">
+        <button class="rail-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+        <div class="rail-line"><div class="rail-thumb" id="railThumb"></div></div>
+        <button class="rail-btn" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">↓</button>
+      </div>
+      <div class="archive-box">
+        <div class="archive-box-title">Archive:</div>
+        <div class="archive-links">
+          <a href="#new">new</a>
+          <a href="#old">old</a>
+          <a href="#favorites">favorites</a>
+          <a href="#dump">dump</a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="gallery-feed">
+      <section class="archive-section" id="new">
+        <div class="section-tag">// new</div>
+        <div class="art-grid">
+          <div class="art-card" onclick="openArt('new #01')">slot 01</div>
+          <div class="art-card" onclick="openArt('new #02')">slot 02</div>
+          <div class="art-card" onclick="openArt('new #03')">slot 03</div>
+          <div class="art-card" onclick="openArt('new #04')">slot 04</div>
+          <div class="art-card" onclick="openArt('new #05')">slot 05</div>
+          <div class="art-card" onclick="openArt('new #06')">slot 06</div>
+        </div>
+      </section>
+      <section class="archive-section" id="old">
+        <div class="section-tag">// old</div>
+        <div class="art-grid">
+          <div class="art-card" onclick="openArt('old #01')">old 01</div>
+          <div class="art-card" onclick="openArt('old #02')">old 02</div>
+          <div class="art-card" onclick="openArt('old #03')">old 03</div>
+          <div class="art-card" onclick="openArt('old #04')">old 04</div>
+          <div class="art-card" onclick="openArt('old #05')">old 05</div>
+          <div class="art-card" onclick="openArt('old #06')">old 06</div>
+        </div>
+      </section>
+      <section class="archive-section" id="favorites">
+        <div class="section-tag">// favorites</div>
+        <div class="art-grid">
+          <div class="art-card" onclick="openArt('fav #01')">fav 01</div>
+          <div class="art-card" onclick="openArt('fav #02')">fav 02</div>
+          <div class="art-card" onclick="openArt('fav #03')">fav 03</div>
+          <div class="art-card" onclick="openArt('fav #04')">fav 04</div>
+          <div class="art-card" onclick="openArt('fav #05')">fav 05</div>
+          <div class="art-card" onclick="openArt('fav #06')">fav 06</div>
+        </div>
+      </section>
+      <section class="archive-section" id="dump">
+        <div class="section-tag">// dump</div>
+        <div class="art-grid">
+          <div class="art-card" onclick="openArt('dump #01')">dump 01</div>
+          <div class="art-card" onclick="openArt('dump #02')">dump 02</div>
+          <div class="art-card" onclick="openArt('dump #03')">dump 03</div>
+          <div class="art-card" onclick="openArt('dump #04')">dump 04</div>
+          <div class="art-card" onclick="openArt('dump #05')">dump 05</div>
+          <div class="art-card" onclick="openArt('dump #06')">dump 06</div>
+        </div>
+      </section>
     </div>
 
-    <div class="nav">
-        <a href="#art">[ ARTWORK ]</a>
-        <a href="#anim">[ ANIMATIONS ]</a>
-        <a href="#wip">[ WIP / RIGS ]</a>
-        <a href="#links">[ LINKS ]</a>
+    <aside class="right-sidebar">
+      <div class="red-stripe"></div>
+      <div class="chat-panel">
+        <div class="chat-messages" id="chatList">
+          <div><div class="msg-header"><div class="msg-avatar">⊗</div><span>1×T^1 :</span></div><div class="msg-text">Hey!</div></div>
+          <div><div class="msg-header"><div class="msg-avatar">⊘</div><span>11×1 :</span></div><div class="msg-text">Hello</div></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <form class="bottom-bar" onsubmit="sendMsg(event)">
+    <input type="text" id="msgInput" placeholder="Text...|" autocomplete="off" />
+    <button type="submit">+</button>
+  </form>
+
+  <div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
+    <div class="lightbox-box" onclick="event.stopPropagation()">
+      <div id="lightboxCaption" style="font-weight:bold;font-size:18px;"></div>
     </div>
+  </div>
 
-    <table class="main-table">
-        <tr>
-            <td class="sidebar">
-                <div class="box">
-                    <div class="box-title">STATUS.TXT</div>
-                    <b>Tools:</b> Tahoma2D, Linux<br>
-                    <b>Focus:</b> 2D Puppet Rigs &amp; Sketches<br><br>
-                    <i>"Show your work."</i>
-                </div>
-
-                <div class="box" id="links">
-                    <div class="box-title">LINKS</div>
-                    &raquo; <a href="#" style="color:#c4b550;">Pinterest</a><br>
-                    &raquo; <a href="#" style="color:#c4b550;">Telegram</a><br>
-                    &raquo; <a href="#" style="color:#c4b550;">YouTube</a>
-                </div>
-            </td>
-
-            <td class="content">
-                <div class="box">
-                    <div class="box-title">WELCOME TO DEFRAS.ART</div>
-                    Hey there! This is my personal archive of sketches, 2D animations, and character rigging experiments.
-                </div>
-
-                <div class="box" id="art">
-                    <div class="box-title">GALLERY / SKETCHES</div>
-                    <div class="art-grid">
-                        <div class="art-slot">[ art_01.png ]<br>drop artwork here</div>
-                        <div class="art-slot">[ anim_01.gif ]<br>drop animation here</div>
-                        <div class="art-slot">[ rig_test.gif ]<br>bone rig test</div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-
-    <div class="footer">
-        &copy; 2026 DEFrAS &bull; Hand-coded in HTML/CSS &bull; Best viewed at 1024x768 :)
-    </div>
-</div>
-
+  <script>
+    const rail = document.querySelector(".rail-line"), thumb = document.getElementById("railThumb");
+    function syncThumb() {
+      const d = document.documentElement.scrollHeight - window.innerHeight;
+      const p = d > 0 ? Math.min(1, Math.max(0, window.scrollY / d)) : 0;
+      thumb.style.top = (p * (rail.clientHeight - thumb.offsetHeight)) + "px";
+    }
+    window.addEventListener("scroll", syncThumb);
+    window.addEventListener("resize", syncThumb);
+    let dragging = false;
+    function scrub(y) {
+      const r = rail.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (y - r.top - thumb.offsetHeight / 2) / (r.height - thumb.offsetHeight)));
+      window.scrollTo(0, p * (document.documentElement.scrollHeight - window.innerHeight));
+    }
+    rail.addEventListener("mousedown", e => { dragging = true; scrub(e.clientY); });
+    window.addEventListener("mousemove", e => { if (dragging) scrub(e.clientY); });
+    window.addEventListener("mouseup", () => { dragging = false; });
+    syncThumb();
+    function openArt(l){document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
+    function sendMsg(e){e.preventDefault();const i=document.getElementById('msgInput'),v=i.value.trim();if(!v)return;const d=document.createElement('div');d.innerHTML='<div class="msg-header"><div class="msg-avatar">◈</div><span>guest :</span></div><div class="msg-text"></div>';d.querySelector('.msg-text').textContent=v;document.getElementById('chatList').appendChild(d);i.value='';}
+  </script>
 </body>
 </html>
