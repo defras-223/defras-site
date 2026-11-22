@@ -18,3 +18,16 @@
 
 .right-sidebar { box-shadow: -14px 0 28px rgba(15, 32, 65, 0.55), -4px 0 10px rgba(10, 18, 38, 0.75) !important; }
 .chat-panel { box-shadow: inset 10px 0 22px rgba(207, 23, 23, 0.35), inset 0 12px 24px rgba(12, 26, 54, 0.45) !important; }
+
+/* Точная сине-индиговая лессировка #363e7d в режиме Multiply (как слой в Krita) */
+.right-sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: -34px; width: 34px;
+  background: linear-gradient(to left, rgba(54, 62, 125, 0.52), rgba(54, 62, 125, 0.14) 55%, transparent);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.chat-panel {
+  background-image: linear-gradient(to right, rgba(54, 62, 125, 0.45), rgba(54, 62, 125, 0.12) 28px, transparent 64px) !important;
+}
