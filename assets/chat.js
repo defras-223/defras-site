@@ -296,22 +296,15 @@ load = async function() {
   await origLoad();
 };
 
-const origFormSubmit = f.onsubmit;
 f.onsubmit = async (e) => {
-  e.preventDefault();
-  if (!sec && activeBans[myUid] && activeBans[myUid].until > Date.now()) {
-    const leftMin = Math.ceil((activeBans[myUid].until - Date.now()) / 60000);
-    showSpamWarn(leftMin > 10000 ? "// You are permanently banned" : `// Muted: ${leftMin}m left`);
-    return;
-  }
-  const origFetch = window.fetch;
-  window.fetch = (url, opts) => {
-    if (opts && opts.method === "POST" && typeof url === "string" && url.includes("/messages.json")) {
-      const b = JSON.parse(opts.body);
-      b.uid = myUid;
-      opts.body = JSON.stringify(b);
-    }
-    return origFetch(url, opts);
-  };
-  try { await origFormSubmit(e); } finally { window.fetch = origFetch; }
+  e.preventDefault(); const v = mIn.value.trim(); if (!v) return;
+  if (!sec && activeBans[myUid]?.until > Date.now()) { showSpamWarn("// Banned or muted"); return; }
+  if (!sec && cdLeft > 0) { showSpamWarn("// Wait " + cdLeft + "s"); return; }
+  mIn.value = "";
+  if (!sec && !(await fetch(BASE + "/lastPost.json", { method: "PUT", body: JSON.stringify({ ".sv": "timestamp" }) })).ok) { showSpamWarn("// Too fast! Wait 4s"); return; }
+  const author = nIn.value.trim() || ("anon#" + Math.floor(100 + Math.random() * 899));
+  const r = await fetch(DB + ".json", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ author, uid: myUid, text: v, isAdmin: Boolean(sec), secret: sec || "", ts: Date.now() }) });
+  if (!r.ok && sec) { sec = ""; localStorage.removeItem("defras_admin_secret"); alert("Invalid admin key"); }
+  else { lastSentText = v; if (!sec) { cdLeft = 4; cdBadge.textContent = "4s"; cdBadge.style.color = "#cf1717"; } }
+  await load(); chatPanel.scrollTop = chatPanel.scrollHeight;
 };
