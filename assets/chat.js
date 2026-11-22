@@ -368,7 +368,7 @@ setInterval(() => {
     if (uid.startsWith("u_") && !sp.dataset.v18) {
       sp.dataset.v18 = "1";
       sp.style.cssText = "background:#0a0a0a;color:#eb6a28;padding:1px 4px;font-size:10px;cursor:pointer;border:1px solid #cf1717;";
-      while (sp.nextSibling) sp.nextSibling.remove();
+      if (sp.nextSibling && sp.nextSibling.tagName !== 'BUTTON') sp.nextSibling.remove();
       sp.onclick = () => openMod(uid);
     }
   });
