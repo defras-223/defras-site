@@ -317,62 +317,7 @@ window.openMod = (uid) => {
   if (v === "ban") banUser(uid, 52560000);
   else if (!isNaN(Number(v))) banUser(uid, Number(v));
 };
-setInterval(() => {
-  if (!sec) return;
-  document.querySelectorAll(".msg-header span").forEach(sp => {
-    if (sp.textContent.startsWith("u_") && !sp.dataset.bound) {
-      sp.dataset.bound = "1";
-      sp.style.cssText = "background:#0a0a0a;color:#eb6a28;padding:0 4px;font-size:10px;cursor:pointer;border:1px solid #cf1717;";
-      sp.title = "Click to Mute / Ban";
-      const uid = sp.textContent.trim();
-      sp.nextSibling && (sp.nextSibling.textContent = "");
-      sp.nextSibling && sp.nextSibling.nextSibling && (sp.nextSibling.nextSibling.textContent = "");
-      sp.onclick = () => openMod(uid);
-    }
-  });
-}, 800);
 
-// Своя встроенная модалка мута/бана (работает во всех браузерах без блокировки prompt)
-const modBox = document.createElement("div");
-modBox.style.cssText = "display:none;position:fixed;inset:0;background:rgba(10,10,10,0.85);z-index:125;align-items:center;justify-content:center;";
-modBox.innerHTML = `<form id="modForm" style="background:#eb6a28;border:4px solid #0a0a0a;padding:18px;width:300px;display:flex;flex-direction:column;gap:10px;">
-  <div id="modTitle" style="font-weight:bold;font-size:14px;">// Moderate user</div>
-  <input type="number" id="modMins" value="15" min="0" placeholder="Minutes (0 = unban)" style="background:#0a0a0a;color:#f4f4f4;border:none;padding:8px;font-family:inherit;font-weight:bold;" />
-  <div style="display:flex;gap:6px;">
-    <button type="submit" style="flex:1;background:#0a0a0a;color:#eb6a28;border:2px solid #0a0a0a;padding:6px;font-weight:bold;cursor:pointer;">MUTE (MIN)</button>
-    <button type="button" id="modPerm" style="background:#cf1717;color:#0a0a0a;border:2px solid #0a0a0a;padding:6px;font-weight:bold;cursor:pointer;">PERMABAN</button>
-    <button type="button" id="modCancel" style="background:#9a9a9a;color:#0a0a0a;border:2px solid #0a0a0a;padding:6px;font-weight:bold;cursor:pointer;">X</button>
-  </div>
-</form>`;
-document.body.appendChild(modBox);
-
-let targetUid = "";
-window.openMod = (uid) => {
-  if (!sec || !uid) return;
-  targetUid = uid;
-  document.getElementById("modTitle").textContent = "// Moderate [" + uid + "]";
-  modBox.style.display = "flex";
-};
-document.getElementById("modCancel").onclick = () => { modBox.style.display = "none"; };
-document.getElementById("modPerm").onclick = () => { banUser(targetUid, 52560000); modBox.style.display = "none"; };
-document.getElementById("modForm").onsubmit = (e) => {
-  e.preventDefault();
-  banUser(targetUid, Number(document.getElementById("modMins").value || 0));
-  modBox.style.display = "none";
-};
-
-setInterval(() => {
-  if (!sec) return;
-  document.querySelectorAll(".msg-header span").forEach(sp => {
-    const uid = sp.textContent.trim();
-    if (uid.startsWith("u_") && !sp.dataset.v18) {
-      sp.dataset.v18 = "1";
-      sp.style.cssText = "background:#0a0a0a;color:#eb6a28;padding:1px 4px;font-size:10px;cursor:pointer;border:1px solid #cf1717;";
-      if (sp.nextSibling && sp.nextSibling.tagName !== 'BUTTON') sp.nextSibling.remove();
-      sp.onclick = () => openMod(uid);
-    }
-  });
-}, 600);
 
 // Наглядные уведомления модерации + кнопка UNBAN внутри модалки
 const origBanUser = window.banUser;
