@@ -35,7 +35,9 @@
     .archive-section { scroll-margin-top:140px; }
     .section-tag { display:inline-block; background:var(--black); color:var(--white); font-size:14px; font-weight:bold; padding:4px 12px; margin-bottom:14px; }
     .art-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-    .art-card { aspect-ratio:16/10; background:#f58245; border:3px solid var(--black); outline:2px solid var(--black); outline-offset:-6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--black); font-weight:bold; font-size:14px; transition:0.15s; }
+    .art-card { overflow:hidden; position:relative; }
+    .art-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .art-card-orig { aspect-ratio:16/10; background:#f58245; border:3px solid var(--black); outline:2px solid var(--black); outline-offset:-6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--black); font-weight:bold; font-size:14px; transition:0.15s; }
     .art-card:hover { transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--red); }
     .right-sidebar { display:grid; grid-template-columns:18px 1fr; border-left:4px solid var(--black); position:sticky; top:118px; height:calc(100vh - 118px); }
     .red-stripe { background:var(--red); border-right:4px solid var(--black); }
@@ -93,45 +95,45 @@
       <section class="archive-section" id="new">
         <div class="section-tag">// new</div>
         <div class="art-grid">
-          <div class="art-card" onclick="openArt('new #01')">slot 01</div>
-          <div class="art-card" onclick="openArt('new #02')">slot 02</div>
-          <div class="art-card" onclick="openArt('new #03')">slot 03</div>
-          <div class="art-card" onclick="openArt('new #04')">slot 04</div>
-          <div class="art-card" onclick="openArt('new #05')">slot 05</div>
-          <div class="art-card" onclick="openArt('new #06')">slot 06</div>
+          <div class="art-card" onclick="openArt('Character Art #01', 'assets/arts/new-01.png')"><img src="assets/arts/new-01.png" alt="Character Art #01" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Expression & Hair Sheet', 'assets/arts/new-02.png')"><img src="assets/arts/new-02.png" alt="Expression & Hair Sheet" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Stylized Boot Asset', 'assets/arts/new-03.png')"><img src="assets/arts/new-03.png" alt="Stylized Boot Asset" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Oversized Hoodie Asset', 'assets/arts/new-04.png')"><img src="assets/arts/new-04.png" alt="Oversized Hoodie Asset" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Baggy Pants Asset #01', 'assets/arts/new-05.png')"><img src="assets/arts/new-05.png" alt="Baggy Pants Asset #01" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Baggy Pants Asset #02', 'assets/arts/new-06.png')"><img src="assets/arts/new-06.png" alt="Baggy Pants Asset #02" loading="lazy" /></div>
         </div>
       </section>
       <section class="archive-section" id="old">
         <div class="section-tag">// old</div>
         <div class="art-grid">
-          <div class="art-card" onclick="openArt('old #01')">old 01</div>
-          <div class="art-card" onclick="openArt('old #02')">old 02</div>
-          <div class="art-card" onclick="openArt('old #03')">old 03</div>
-          <div class="art-card" onclick="openArt('old #04')">old 04</div>
-          <div class="art-card" onclick="openArt('old #05')">old 05</div>
-          <div class="art-card" onclick="openArt('old #06')">old 06</div>
+          <div class="art-card" onclick="openArt('OC Concept #01', 'assets/arts/old-01.png')"><img src="assets/arts/old-01.png" alt="OC Concept #01" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('OC Concept #02', 'assets/arts/old-02.png')"><img src="assets/arts/old-02.png" alt="OC Concept #02" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Head Line & Color', 'assets/arts/old-03.png')"><img src="assets/arts/old-03.png" alt="Head Line & Color" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Chibi Base Pose 3/4', 'assets/arts/old-04.png')"><img src="assets/arts/old-04.png" alt="Chibi Base Pose 3/4" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Furry Character Line Art', 'assets/arts/old-05.png')"><img src="assets/arts/old-05.png" alt="Furry Character Line Art" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Magic Artifacts Pack', 'assets/arts/old-06.png')"><img src="assets/arts/old-06.png" alt="Magic Artifacts Pack" loading="lazy" /></div>
         </div>
       </section>
       <section class="archive-section" id="favorites">
         <div class="section-tag">// favorites</div>
         <div class="art-grid">
-          <div class="art-card" onclick="openArt('fav #01')">fav 01</div>
-          <div class="art-card" onclick="openArt('fav #02')">fav 02</div>
-          <div class="art-card" onclick="openArt('fav #03')">fav 03</div>
-          <div class="art-card" onclick="openArt('fav #04')">fav 04</div>
-          <div class="art-card" onclick="openArt('fav #05')">fav 05</div>
-          <div class="art-card" onclick="openArt('fav #06')">fav 06</div>
+          <div class="art-card" onclick="openArt('Fluffy Pink Hair Asset', 'assets/arts/fav-01.png')"><img src="assets/arts/fav-01.png" alt="Fluffy Pink Hair Asset" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Anime Hair Drawing', 'assets/arts/fav-02.png')"><img src="assets/arts/fav-02.png" alt="Anime Hair Drawing" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Furry Fox Head Line', 'assets/arts/fav-03.png')"><img src="assets/arts/fav-03.png" alt="Furry Fox Head Line" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Stylized Wing Asset', 'assets/arts/fav-04.png')"><img src="assets/arts/fav-04.png" alt="Stylized Wing Asset" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Jacket Sketch Line', 'assets/arts/fav-05.png')"><img src="assets/arts/fav-05.png" alt="Jacket Sketch Line" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Butterfly Knife Line', 'assets/arts/fav-06.png')"><img src="assets/arts/fav-06.png" alt="Butterfly Knife Line" loading="lazy" /></div>
         </div>
       </section>
       <section class="archive-section" id="dump">
         <div class="section-tag">// dump</div>
         <div class="art-grid">
-          <div class="art-card" onclick="openArt('dump #01')">dump 01</div>
-          <div class="art-card" onclick="openArt('dump #02')">dump 02</div>
-          <div class="art-card" onclick="openArt('dump #03')">dump 03</div>
-          <div class="art-card" onclick="openArt('dump #04')">dump 04</div>
-          <div class="art-card" onclick="openArt('dump #05')">dump 05</div>
-          <div class="art-card" onclick="openArt('dump #06')">dump 06</div>
+          <div class="art-card" onclick="openArt('Boot Sketch Line', 'assets/arts/dump-01.png')"><img src="assets/arts/dump-01.png" alt="Boot Sketch Line" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Hair Line Sheet', 'assets/arts/dump-02.png')"><img src="assets/arts/dump-02.png" alt="Hair Line Sheet" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Head Sketch Line', 'assets/arts/dump-03.png')"><img src="assets/arts/dump-03.png" alt="Head Sketch Line" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Jacket 90° Turnaround', 'assets/arts/dump-04.png')"><img src="assets/arts/dump-04.png" alt="Jacket 90° Turnaround" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Raw Sketch #03', 'assets/arts/dump-05.png')"><img src="assets/arts/dump-05.png" alt="Raw Sketch #03" loading="lazy" /></div>
+          <div class="art-card" onclick="openArt('Pointing Hand Sketch', 'assets/arts/dump-06.png')"><img src="assets/arts/dump-06.png" alt="Pointing Hand Sketch" loading="lazy" /></div>
         </div>
       </section>
     </div>
@@ -150,6 +152,7 @@
 
   <div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
     <div class="lightbox-box" onclick="event.stopPropagation()">
+      <img id="lightboxImg" src="" alt="" style="max-width:100%;max-height:74vh;object-fit:contain;border:3px solid #0a0a0a;background:#f4f4f4;display:block;margin:0 auto 12px;" />
       <div id="lightboxCaption" style="font-weight:bold;font-size:18px;"></div>
     </div>
   </div>
@@ -183,7 +186,7 @@
     window.addEventListener("mousemove", e => { if (dragging) scrub(e.clientY); });
     window.addEventListener("mouseup", () => { dragging = false; });
     syncThumb();
-    function openArt(l){document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
+    function openArt(l,src){const img=document.getElementById('lightboxImg');if(src){img.src=src;img.style.display='block';}else{img.style.display='none';}document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
     </script>
 <script src="/assets/chat.js?v=45"></script></body>
 </html>
