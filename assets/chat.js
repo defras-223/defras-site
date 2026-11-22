@@ -104,3 +104,24 @@ form.removeAttribute("onsubmit");
 form.addEventListener("submit", window.sendMsg);
 
 form.querySelector("button").onclick = window.sendMsg;
+
+// Железно перехватываем форму и отключаем перезагрузку страницы
+const oldForm = document.querySelector(".bottom-bar");
+const cleanForm = oldForm.cloneNode(true);
+oldForm.parentNode.replaceChild(cleanForm, oldForm);
+cleanForm.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const mIn = cleanForm.querySelector("#msgInput");
+  const nIn = cleanForm.querySelector("#nickInput");
+  const v = mIn.value.trim();
+  if (!v) return;
+  mIn.value = "";
+  const author = nIn.value.trim() || ("anon#" + Math.floor(100 + Math.random() * 899));
+  const res = await fetch(DB_URL + ".json", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ author, text: v, isAdmin: Boolean(adminSecret), secret: adminSecret || "", ts: Date.now() })
+  });
+  if (!res.ok) alert("Ошибка отправки (проверь ключ админа или Rules)");
+  loadMessages();
+});
