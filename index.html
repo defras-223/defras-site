@@ -21,7 +21,7 @@
     .top-nav a:last-child { border-bottom:none; }
     .top-nav a:hover, .top-nav a.active { background:var(--black); color:var(--white); }
     .workspace { display:grid; grid-template-columns:185px 1fr 220px; min-height:calc(100vh - 118px); }
-    .left-sidebar { padding:14px 12px; display:flex; flex-direction:column; justify-content:space-between; position:sticky; top:118px; height:calc(100vh - 118px); }
+    .left-sidebar { padding:14px 12px; z-index:20; display:flex; flex-direction:column; justify-content:space-between; position:sticky; top:118px; height:calc(100vh - 118px); }
     .scroll-rail { display:flex; flex-direction:column; align-items:flex-start; gap:6px; flex:1; margin-bottom:12px; }
     .rail-btn { background:none; border:none; color:var(--white); font-size:20px; font-weight:bold; cursor:pointer; }
     .rail-line { cursor:pointer; user-select:none; width:6px; flex:1; background:var(--black); margin-left:6px; position:relative; }
@@ -164,21 +164,27 @@
     }
     const rail = document.querySelector(".rail-line"), thumb = document.getElementById("railThumb");
     function syncThumb() {
+      if (!rail || !thumb) return;
       const d = document.documentElement.scrollHeight - window.innerHeight;
       const p = d > 0 ? Math.min(1, Math.max(0, window.scrollY / d)) : 0;
-      thumb.style.top = (p * (rail.clientHeight - thumb.offsetHeight)) + "px";
+      const maxTop = Math.max(0, rail.clientHeight - thumb.offsetHeight);
+      thumb.style.top = (p * maxTop) + "px";
     }
-    window.addEventListener("scroll", syncThumb);
+    window.addEventListener("scroll", syncThumb, { passive: true });
     window.addEventListener("resize", syncThumb);
+    window.addEventListener("load", syncThumb);
     let dragging = false;
     function scrub(y) {
       const r = rail.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, (y - r.top - thumb.offsetHeight / 2) / (r.height - thumb.offsetHeight)));
-      window.scrollTo(0, p * (document.documentElement.scrollHeight - window.innerHeight));
+      const avail = Math.max(1, r.height - thumb.offsetHeight);
+      const p = Math.min(1, Math.max(0, (y - r.top - thumb.offsetHeight / 2) / avail));
+      const d = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: p * d, behavior: "auto" });
     }
-    rail.addEventListener("mousedown", e => { dragging = true; scrub(e.clientY); });
-    window.addEventListener("mousemove", e => { if (dragging) scrub(e.clientY); });
+    rail.addEventListener("mousedown", e => { e.preventDefault(); dragging = true; scrub(e.clientY); });
+    window.addEventListener("mousemove", e => { if (dragging) { e.preventDefault(); scrub(e.clientY); } });
     window.addEventListener("mouseup", () => { dragging = false; });
+    setInterval(syncThumb, 500);
     syncThumb();
     function openArt(l,src){const img=document.getElementById('lightboxImg');if(img){if(src){img.src=src;img.style.display='block';}else{img.style.display='none';}}document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}else{img.style.display='none';}document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
     </script>
