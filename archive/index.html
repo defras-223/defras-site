@@ -158,99 +158,52 @@
   </div>
 
   <div id="wipToast" style="display:none;position:fixed;top:132px;right:235px;background:#0a0a0a;color:#f4f4f4;border:3px solid #cf1717;padding:10px 14px;font-weight:bold;font-size:13px;z-index:90;box-shadow:4px 4px 0 #0a0a0a;"></div>
-    <div id="adminModal" style="display:none;position:fixed;inset:0;background:rgba(10,10,10,0.85);z-index:120;align-items:center;justify-content:center;">
-    <form onsubmit="loginAdmin(event)" style="background:#eb6a28;border:4px solid #0a0a0a;padding:20px;width:300px;display:flex;flex-direction:column;gap:10px;">
-      <div style="font-weight:bold;font-size:15px;">// DEFrAS Admin Auth</div>
-      <input type="password" id="adminPassInput" placeholder="Secret key..." style="background:#0a0a0a;color:#f4f4f4;border:none;padding:8px;font-family:inherit;font-weight:bold;" />
-      <div style="display:flex;gap:8px;">
-        <button type="submit" style="flex:1;background:#cf1717;color:#0a0a0a;border:2px solid #0a0a0a;padding:6px;font-weight:bold;cursor:pointer;">Login</button>
-        <button type="button" onclick="document.getElementById('adminModal').style.display='none'" style="background:#9a9a9a;color:#0a0a0a;border:2px solid #0a0a0a;padding:6px;font-weight:bold;cursor:pointer;">Cancel</button>
-      </div>
-    </form>
-  </div>
   <script>
-    const DB_URL = "https://boltalka-16a6a-default-rtdb.europe-west1.firebasedatabase.app/messages";
-    let adminSecret = localStorage.getItem("defras_admin_secret") || "";
-
-    document.querySelector(".logo-slot").addEventListener("dblclick", () => {
-      if (adminSecret) {
-        if (confirm("Выйти из режима админа DEFrAS?")) {
-          adminSecret = "";
-          localStorage.removeItem("defras_admin_secret");
-          loadMessages();
-        }
-      } else {
-        document.getElementById("adminModal").style.display = "flex";
-        document.getElementById("adminPassInput").focus();
-      }
-    });
-
-    function loginAdmin(e) {
+    let wipTimer;
+    function wipToast(e, name) {
       e.preventDefault();
-      const val = document.getElementById("adminPassInput").value.trim();
-      if (!val) return;
-      adminSecret = val;
-      localStorage.setItem("defras_admin_secret", val);
-      document.getElementById("adminPassInput").value = "";
-      document.getElementById("adminModal").style.display = "none";
-      loadMessages();
+      const t = document.getElementById("wipToast");
+      t.textContent = "// " + name + " — coming soon (WIP)";
+      t.style.display = "block";
+      clearTimeout(wipTimer);
+      wipTimer = setTimeout(() => { t.style.display = "none"; }, 2600);
     }
-
-    async function deleteMsg(id) {
-      if (!adminSecret) return;
-      await fetch(`${DB_URL}/${id}.json`, { method: "DELETE" });
-      loadMessages();
+    const rail = document.querySelector(".rail-line"), thumb = document.getElementById("railThumb");
+    function syncThumb() {
+      const d = document.documentElement.scrollHeight - window.innerHeight;
+      const p = d > 0 ? Math.min(1, Math.max(0, window.scrollY / d)) : 0;
+      thumb.style.top = (p * (rail.clientHeight - thumb.offsetHeight)) + "px";
     }
-
-    async function loadMessages() {
-      try {
-        const res = await fetch(`${DB_URL}.json`);
-        const data = await res.json();
-        const list = document.getElementById("chatList");
-        list.innerHTML = `
-          <div><div class="msg-header"><div class="msg-avatar">⊗</div><span>1×T^1 :</span></div><div class="msg-text">Hey!</div></div>
-          <div><div class="msg-header"><div class="msg-avatar">⊘</div><span>11×1 :</span></div><div class="msg-text">Hello</div></div>
-        `;
-        if (!data) return;
-        Object.entries(data).forEach(([id, m]) => {
-          const d = document.createElement("div");
-          const badge = m.isAdmin ? `<span style="color:#cf1717;background:#0a0a0a;padding:0 4px;">DEFrAS ★</span>` : `<span>guest</span>`;
-          const delBtn = adminSecret ? `<button onclick="deleteMsg('${id}')" style="margin-left:auto;background:#0a0a0a;color:#cf1717;border:none;cursor:pointer;font-weight:bold;padding:0 5px;">×</button>` : "";
-          d.innerHTML = `<div class="msg-header"><div class="msg-avatar">${m.isAdmin ? "★" : "◈"}</div>${badge} :${delBtn}</div><div class="msg-text"></div>`;
-          d.querySelector(".msg-text").textContent = m.text;
-          list.appendChild(d);
-        });
-        const panel = document.querySelector(".chat-panel");
-        panel.scrollTop = panel.scrollHeight;
-      } catch (err) { console.error(err); }
+    window.addEventListener("scroll", syncThumb);
+    window.addEventListener("resize", syncThumb);
+    let dragging = false;
+    function scrub(y) {
+      const r = rail.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (y - r.top - thumb.offsetHeight / 2) / (r.height - thumb.offsetHeight)));
+      window.scrollTo(0, p * (document.documentElement.scrollHeight - window.innerHeight));
     }
-
-    async function sendMsg(e) {
+    rail.addEventListener("mousedown", e => { dragging = true; scrub(e.clientY); });
+    window.addEventListener("mousemove", e => { if (dragging) scrub(e.clientY); });
+    window.addEventListener("mouseup", () => { dragging = false; });
+    syncThumb();
+    function openArt(l){document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
+    function addMsgDOM(txt) {
+      const d = document.createElement("div");
+      d.innerHTML = '<div class="msg-header"><div class="msg-avatar">◈</div><span>guest :</span></div><div class="msg-text"></div>';
+      d.querySelector(".msg-text").textContent = txt;
+      document.getElementById("chatList").appendChild(d);
+    }
+    const savedMsgs = JSON.parse(localStorage.getItem("defras_chat") || "[]");
+    savedMsgs.forEach(addMsgDOM);
+    function sendMsg(e) {
       e.preventDefault();
       const i = document.getElementById("msgInput"), v = i.value.trim();
       if (!v) return;
+      addMsgDOM(v);
+      savedMsgs.push(v);
+      localStorage.setItem("defras_chat", JSON.stringify(savedMsgs));
       i.value = "";
-      const payload = {
-        text: v,
-        isAdmin: Boolean(adminSecret),
-        secret: adminSecret || "",
-        ts: Date.now()
-      };
-      const res = await fetch(`${DB_URL}.json`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok && adminSecret) {
-        alert("Неверный ключ админа!");
-        adminSecret = "";
-        localStorage.removeItem("defras_admin_secret");
-      }
-      loadMessages();
     }
-
-    loadMessages();
-    setInterval(loadMessages, 4000);
   </script>
 </body>
 </html>
