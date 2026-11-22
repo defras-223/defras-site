@@ -373,3 +373,19 @@ setInterval(() => {
     }
   });
 }, 600);
+
+// Наглядные уведомления модерации + кнопка UNBAN внутри модалки
+const origBanUser = window.banUser;
+window.banUser = async (uid, mins) => {
+  await origBanUser(uid, mins);
+  if (mins === 0) showWarn(`// Unbanned [${uid}]`);
+  else if (mins >= 50000000) showWarn(`// Permabanned [${uid}]`);
+  else showWarn(`// Muted [${uid}] for ${mins}m`);
+};
+
+const unbanBtn = document.createElement("button");
+unbanBtn.type = "button";
+unbanBtn.textContent = "UNBAN";
+unbanBtn.style.cssText = "background:#0a0a0a;color:#4caf50;border:2px solid #4caf50;padding:6px;font-weight:bold;cursor:pointer;";
+unbanBtn.onclick = () => { banUser(targetUid, 0); modBox.style.display = "none"; };
+document.getElementById("modForm").lastElementChild.insertBefore(unbanBtn, document.getElementById("modCancel"));
