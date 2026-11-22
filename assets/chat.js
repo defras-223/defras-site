@@ -458,3 +458,5 @@ setInterval(() => {
     }
   });
 }, 700);
+
+let tw=220,cw=220,dg=0;const st=document.querySelector(".red-stripe"),rs=document.querySelector(".right-sidebar"),bb=document.querySelector(".bottom-bar");if(st&&rs&&bb){st.onmousedown=e=>{dg=1;e.preventDefault();};window.addEventListener("mousemove",e=>{if(dg)tw=Math.min(620,Math.max(220,window.innerWidth-e.clientX));});window.addEventListener("mouseup",()=>{if(dg){dg=0;if(Math.abs(tw-440)<60)tw=440;else if(tw<260)tw=220;}});(function loop(){if(window.innerWidth>850){cw+=(tw-cw)*0.15;rs.style.width=cw+"px";bb.style.right=(cw+15)+"px";}requestAnimationFrame(loop);})();}
