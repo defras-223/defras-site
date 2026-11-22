@@ -85,7 +85,7 @@ function makeMsgNode([id, m]) {
 function renderArchive() {
   const q = document.getElementById("archSearch").value.toLowerCase();
   const box = document.getElementById("archList");
-  const filtered = allEntries.filter(([_, m]) => (m.text || "").toLowerCase().includes(q) || (m.author || "").toLowerCase().includes(q));
+  const filtered = allEntries.filter(([_, m]) => (m.text || "").toLowerCase().includes(q) || (m.isAdmin ? "defras admin " : (m.author || "guest").toLowerCase()).includes(q));
   document.getElementById("archCount").textContent = `// CHAT ARCHIVE (${filtered.length})`;
   box.innerHTML = "";
   filtered.forEach(item => box.appendChild(makeMsgNode(item)));
@@ -220,7 +220,7 @@ renderArchive = function() {
     if (archTab === "admin" && !m.isAdmin) return false;
     if (archTab === "guest" && m.isAdmin) return false;
     const tStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
-    return (m.text || "").toLowerCase().includes(q) || (m.author || "").toLowerCase().includes(q) || tStr.includes(q);
+    return (m.text || "").toLowerCase().includes(q) || (m.isAdmin ? "defras admin " : (m.author || "guest").toLowerCase()).includes(q) || tStr.includes(q);
   });
   document.getElementById("archCount").textContent = `// ARCHIVE (${filtered.length} total)`;
   box.innerHTML = "";
