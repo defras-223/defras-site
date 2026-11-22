@@ -25,7 +25,7 @@
     .scroll-rail { display:flex; flex-direction:column; align-items:flex-start; gap:6px; flex:1; margin-bottom:12px; }
     .rail-btn { background:none; border:none; color:var(--white); font-size:20px; font-weight:bold; cursor:pointer; }
     .rail-line { cursor:pointer; user-select:none; width:6px; flex:1; background:var(--black); margin-left:6px; position:relative; }
-    .rail-thumb { width:12px; height:36px; background:var(--white); border:2px solid var(--black); position:absolute; left:-3px; top:0; }
+    .rail-thumb { z-index:2; pointer-events:none;  width:12px; height:36px; background:var(--white); border:2px solid var(--black); position:absolute; left:-3px; top:0; }
     .archive-box { background:var(--black); padding:10px; }
     .archive-box-title { color:var(--white); font-size:16px; font-weight:bold; margin-bottom:8px; }
     .archive-links { display:flex; flex-direction:column; gap:6px; }
@@ -152,41 +152,71 @@
   </div>
 
   <div id="wipToast" style="display:none;position:fixed;top:132px;right:235px;background:#0a0a0a;color:#f4f4f4;border:3px solid #cf1717;padding:10px 14px;font-weight:bold;font-size:13px;z-index:90;box-shadow:4px 4px 0 #0a0a0a;"></div>
-  <script>
+    <script>
     let wipTimer;
     function wipToast(e, name) {
       e.preventDefault();
       const t = document.getElementById("wipToast");
+      if (!t) return;
       t.textContent = "// " + name + " — coming soon (WIP)";
       t.style.display = "block";
       clearTimeout(wipTimer);
       wipTimer = setTimeout(() => { t.style.display = "none"; }, 2600);
     }
-    const rail = document.querySelector(".rail-line"), thumb = document.getElementById("railThumb");
-    function syncThumb() {
-      if (!rail || !thumb) return;
-      const d = document.documentElement.scrollHeight - window.innerHeight;
-      const p = d > 0 ? Math.min(1, Math.max(0, window.scrollY / d)) : 0;
-      const maxTop = Math.max(0, rail.clientHeight - thumb.offsetHeight);
-      thumb.style.top = (p * maxTop) + "px";
-    }
-    window.addEventListener("scroll", syncThumb, { passive: true });
-    window.addEventListener("resize", syncThumb);
-    window.addEventListener("load", syncThumb);
+
+    const rail = document.querySelector(".rail-line");
+    const thumb = document.getElementById("railThumb");
     let dragging = false;
-    function scrub(y) {
-      const r = rail.getBoundingClientRect();
-      const avail = Math.max(1, r.height - thumb.offsetHeight);
-      const p = Math.min(1, Math.max(0, (y - r.top - thumb.offsetHeight / 2) / avail));
-      const d = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo({ top: p * d, behavior: "auto" });
+
+    function syncThumb() {
+      if (rail && thumb) {
+        const doc = document.documentElement;
+        const scrollTop = window.pageYOffset || doc.scrollTop || document.body.scrollTop || 0;
+        const maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
+        const p = Math.min(1, Math.max(0, scrollTop / maxScroll));
+        const track = Math.max(0, rail.clientHeight - thumb.offsetHeight);
+        thumb.style.transform = "translateY(" + (p * track) + "px)";
+      }
+      requestAnimationFrame(syncThumb);
     }
-    rail.addEventListener("mousedown", e => { e.preventDefault(); dragging = true; scrub(e.clientY); });
-    window.addEventListener("mousemove", e => { if (dragging) { e.preventDefault(); scrub(e.clientY); } });
-    window.addEventListener("mouseup", () => { dragging = false; });
-    setInterval(syncThumb, 500);
-    syncThumb();
-    function openArt(l,src){const img=document.getElementById('lightboxImg');if(img){if(src){img.src=src;img.style.display='block';}else{img.style.display='none';}}document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}else{img.style.display='none';}document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
-    </script>
+    requestAnimationFrame(syncThumb);
+
+    function scrub(y) {
+      if (!rail || !thumb) return;
+      const r = rail.getBoundingClientRect();
+      const track = Math.max(1, r.height - thumb.offsetHeight);
+      const p = Math.min(1, Math.max(0, (y - r.top - thumb.offsetHeight / 2) / track));
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      window.scrollTo(0, p * maxScroll);
+    }
+
+    if (rail) {
+      rail.addEventListener("mousedown", e => {
+        dragging = true;
+        document.documentElement.style.scrollBehavior = "auto";
+        scrub(e.clientY);
+        e.preventDefault();
+      });
+    }
+    window.addEventListener("mousemove", e => { if (dragging) scrub(e.clientY); });
+    window.addEventListener("mouseup", () => {
+      if (dragging) {
+        dragging = false;
+        document.documentElement.style.scrollBehavior = "smooth";
+      }
+    });
+
+    function openArt(l, src) {
+      const img = document.getElementById("lightboxImg");
+      if (img) {
+        if (src) { img.src = src; img.style.display = "block"; }
+        else { img.style.display = "none"; }
+      }
+      const cap = document.getElementById("lightboxCaption");
+      if (cap) cap.textContent = "DEFrAS Archive — " + l;
+      const lb = document.getElementById("lightbox");
+      if (lb) lb.classList.add("open");
+    }
+  </script>
 <script src="/assets/chat.js?v=45"></script></body>
 </html>
