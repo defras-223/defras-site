@@ -281,7 +281,7 @@ makeMsgNode = function([id, m]) {
       ? `<button onclick="banUser('${m.uid}', 0)" title="Unban ${m.uid}" style="background:#0a0a0a;color:#4caf50;border:1px solid #4caf50;padding:0 3px;cursor:pointer;">UNBAN</button>`
       : `<span style="background:#0a0a0a;color:#9a9a9a;padding:0 3px;">${m.uid}</span>
          <button onclick="banUser('${m.uid}', 15)" title="Mute 15m" style="background:#0a0a0a;color:#eb6a28;border:none;padding:0 3px;cursor:pointer;">M15</button>
-         <button onclick="banUser('${m.uid}', 5256000)" title="Permaban" style="background:#0a0a0a;color:#cf1717;border:none;padding:0 3px;cursor:pointer;">BAN</button>`;
+         <button onclick="banUser('${m.uid}', 5256000)" title="Permaban" style="background:#0a0a0a;color:#cf1717;border:none;padding:0 3px;cursor:pointer;">BAN</button>-->`;
     hdr.insertBefore(tools, hdr.lastElementChild);
   }
   return d;
@@ -372,7 +372,7 @@ setInterval(() => {
       sp.onclick = () => openMod(uid);
     }
   });
-}, 600);
+}, 99999999);
 
 // Наглядные уведомления модерации + кнопка UNBAN внутри модалки
 const origBanUser = window.banUser;
