@@ -79,3 +79,35 @@ f.onsubmit = async (e) => {
 
 load();
 setInterval(load, 4000);
+
+// Добавляем стильную плашку ошибки ключа + автоскролл чата
+const errBox = document.createElement("div");
+errBox.style.cssText = "color:#cf1717;background:#0a0a0a;padding:6px 8px;font-weight:bold;font-size:12px;display:none;";
+document.getElementById("admF").insertBefore(errBox, document.getElementById("admF").lastElementChild);
+
+const origOnSubmit = f.onsubmit;
+f.onsubmit = async (e) => {
+  e.preventDefault();
+  const v = mIn.value.trim();
+  if (!v) return;
+  mIn.value = "";
+  const author = nIn.value.trim() || ("anon#" + Math.floor(100 + Math.random() * 899));
+  const r = await fetch(DB + ".json", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ author, text: v, isAdmin: Boolean(sec), secret: sec || "", ts: Date.now() })
+  });
+  if (!r.ok && sec) {
+    sec = "";
+    localStorage.removeItem("defras_admin_secret");
+    errBox.textContent = "// Access denied: invalid admin key";
+    errBox.style.display = "block";
+    modal.style.display = "flex";
+    document.getElementById("admP").focus();
+  } else {
+    errBox.style.display = "none";
+  }
+  await load();
+  const panel = document.querySelector(".chat-panel");
+  if (panel) panel.scrollTop = panel.scrollHeight;
+};
