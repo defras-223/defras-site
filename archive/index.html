@@ -34,7 +34,7 @@
     .archive-section { scroll-margin-top:140px; }
     .section-tag { display:inline-block; background:var(--black); color:var(--white); font-size:14px; font-weight:bold; padding:4px 12px; margin-bottom:14px; }
     .art-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-    .art-card { aspect-ratio:16/10; background:var(--black); border:3px solid var(--black); outline:2px solid var(--white); outline-offset:-6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#777; font-size:13px; transition:0.15s; }
+    .art-card { aspect-ratio:16/10; background:var(--black); border:3px solid var(--black); outline:2px solid var(--black); outline-offset:-6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--black); font-weight:bold; font-size:13px; transition:0.15s; }
     .art-card:hover { transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--red); }
     .right-sidebar { display:grid; grid-template-columns:18px 1fr; border-left:4px solid var(--black); position:sticky; top:118px; height:calc(100vh - 118px); }
     .red-stripe { background:var(--red); border-right:4px solid var(--black); }
@@ -43,7 +43,7 @@
     .msg-header { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:bold; font-size:15px; }
     .msg-avatar { width:26px; height:26px; border-radius:50%; border:2px solid var(--white); display:flex; align-items:center; justify-content:center; font-size:12px; }
     .msg-text { color:var(--white); font-size:18px; font-weight:bold; padding-left:34px; margin-top:4px; }
-    .bottom-bar { position:fixed; bottom:14px; left:205px; right:235px; height:40px; background:var(--black); display:flex; align-items:center; padding:0 12px; z-index:60; }
+    .bottom-bar { position:fixed; bottom:14px; left:205px; right:235px; height:40px; background:var(--black); display:flex; align-items:center; padding:0 12px; z-index:60; border:3px solid var(--white); box-shadow:0 4px 12px rgba(0,0,0,0.6); }
     .bottom-bar input { flex:1; background:transparent; border:none; outline:none; color:var(--white); font-family:inherit; font-size:16px; font-weight:bold; }
     .bottom-bar button { background:none; border:none; color:var(--white); font-size:24px; font-weight:bold; cursor:pointer; }
     .lightbox { display:none; position:fixed; inset:0; background:rgba(10,10,10,.9); z-index:100; align-items:center; justify-content:center; padding:24px; }
@@ -177,7 +177,23 @@
     window.addEventListener("mouseup", () => { dragging = false; });
     syncThumb();
     function openArt(l){document.getElementById('lightboxCaption').textContent='DEFrAS Archive — '+l;document.getElementById('lightbox').classList.add('open');}
-    function sendMsg(e){e.preventDefault();const i=document.getElementById('msgInput'),v=i.value.trim();if(!v)return;const d=document.createElement('div');d.innerHTML='<div class="msg-header"><div class="msg-avatar">◈</div><span>guest :</span></div><div class="msg-text"></div>';d.querySelector('.msg-text').textContent=v;document.getElementById('chatList').appendChild(d);i.value='';}
+    function addMsgDOM(txt) {
+      const d = document.createElement("div");
+      d.innerHTML = '<div class="msg-header"><div class="msg-avatar">◈</div><span>guest :</span></div><div class="msg-text"></div>';
+      d.querySelector(".msg-text").textContent = txt;
+      document.getElementById("chatList").appendChild(d);
+    }
+    const savedMsgs = JSON.parse(localStorage.getItem("defras_chat") || "[]");
+    savedMsgs.forEach(addMsgDOM);
+    function sendMsg(e) {
+      e.preventDefault();
+      const i = document.getElementById("msgInput"), v = i.value.trim();
+      if (!v) return;
+      addMsgDOM(v);
+      savedMsgs.push(v);
+      localStorage.setItem("defras_chat", JSON.stringify(savedMsgs));
+      i.value = "";
+    }
   </script>
 </body>
 </html>
