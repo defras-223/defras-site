@@ -1,4 +1,4 @@
-const DB_URL = "https://firebasedatabase.app";
+const DB_URL = "https://" + "boltalka-16a6a-default-rtdb" + ".europe-west1." + "firebasedatabase.app/messages";
 let adminSecret = localStorage.getItem("defras_admin_secret") || "";
 
 // Добавляем поле выбора Nick слева от Text...|
@@ -99,3 +99,6 @@ window.sendMsg = async function(e) {
 
 loadMessages();
 setInterval(loadMessages, 4000);
+
+form.removeAttribute("onsubmit");
+form.addEventListener("submit", window.sendMsg);
