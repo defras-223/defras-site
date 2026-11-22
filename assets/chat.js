@@ -389,3 +389,47 @@ unbanBtn.textContent = "UNBAN";
 unbanBtn.style.cssText = "background:#0a0a0a;color:#4caf50;border:2px solid #4caf50;padding:6px;font-weight:bold;cursor:pointer;";
 unbanBtn.onclick = () => { banUser(targetUid, 0); modBox.style.display = "none"; };
 document.getElementById("modForm").lastElementChild.insertBefore(unbanBtn, document.getElementById("modCancel"));
+
+// Выдвижная стрелочка « / » на красной полосе чата + возврат крестика × для гостевых постов
+const stripe = document.querySelector(".red-stripe");
+const rightSide = document.querySelector(".right-sidebar");
+const bottomBar = document.querySelector(".bottom-bar");
+let chatExpanded = false;
+
+if (stripe && rightSide) {
+  stripe.style.cssText += "display:flex;align-items:center;justify-content:center;cursor:pointer;color:#0a0a0a;font-weight:bold;font-size:16px;user-select:none;";
+  stripe.textContent = "«";
+  stripe.title = "Expand / Collapse chat";
+  rightSide.style.transition = "width 0.2s ease";
+  bottomBar.style.transition = "right 0.2s ease";
+
+  stripe.onclick = () => {
+    chatExpanded = !chatExpanded;
+    if (window.innerWidth > 850) {
+      rightSide.style.width = chatExpanded ? "430px" : "220px";
+      rightSide.style.marginLeft = chatExpanded ? "-210px" : "0px";
+      bottomBar.style.right = chatExpanded ? "445px" : "235px";
+    }
+    stripe.textContent = chatExpanded ? "»" : "«";
+  };
+}
+
+// Гарантированный возврат кнопки удаления × у гостевых сообщений в админке
+setInterval(() => {
+  if (!sec) return;
+  document.querySelectorAll(".msg-header").forEach(hdr => {
+    const sp = hdr.querySelector("span[data-v18]");
+    if (sp && !hdr.querySelector(".del-fix")) {
+      const mText = hdr.nextElementSibling?.textContent;
+      const found = allEntries.find(([_, m]) => m.text === mText && !m.isAdmin);
+      if (found) {
+        const btn = document.createElement("button");
+        btn.className = "del-fix";
+        btn.textContent = "×";
+        btn.style.cssText = "margin-left:auto;background:#0a0a0a;color:#cf1717;border:none;cursor:pointer;font-weight:bold;padding:0 5px;";
+        btn.onclick = () => delMsg(found[0]);
+        hdr.appendChild(btn);
+      }
+    }
+  });
+}, 700);
