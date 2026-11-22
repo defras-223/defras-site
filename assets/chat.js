@@ -415,3 +415,5 @@ document.body.appendChild(bgShadow);
   if (rs && window.innerWidth > 850) bgShadow.style.right = rs.offsetWidth + "px";
   requestAnimationFrame(syncShadow);
 })();
+
+document.addEventListener("click", e => { const t = e.target.textContent.trim(); if (sec && t.startsWith("u_")) openMod(t); });
