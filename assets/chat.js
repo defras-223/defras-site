@@ -249,3 +249,69 @@ renderArchive = function() {
     });
   });
 };
+
+// Уникальный UID устройства + система банов/мутов для админа
+let myUid = localStorage.getItem("defras_uid");
+if (!myUid) {
+  myUid = "u_" + Math.random().toString(36).substring(2, 8);
+  localStorage.setItem("defras_uid", myUid);
+}
+let activeBans = {};
+
+window.banUser = async (uid, mins) => {
+  if (!sec || !uid) return;
+  const until = mins === 0 ? 0 : Date.now() + mins * 60 * 1000;
+  await fetch(`${BASE}/bans/${uid}.json`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ until, secret: sec })
+  });
+  await load();
+};
+
+const origMakeMsg = makeMsgNode;
+makeMsgNode = function([id, m]) {
+  const d = origMakeMsg([id, m]);
+  if (sec && !m.isAdmin && m.uid) {
+    const isBanned = activeBans[m.uid] && activeBans[m.uid].until > Date.now();
+    const hdr = d.querySelector(".msg-header");
+    const tools = document.createElement("span");
+    tools.style.cssText = "display:inline-flex;gap:3px;margin-left:4px;font-size:10px;";
+    tools.innerHTML = isBanned
+      ? `<button onclick="banUser('${m.uid}', 0)" title="Unban ${m.uid}" style="background:#0a0a0a;color:#4caf50;border:1px solid #4caf50;padding:0 3px;cursor:pointer;">UNBAN</button>`
+      : `<span style="background:#0a0a0a;color:#9a9a9a;padding:0 3px;">${m.uid}</span>
+         <button onclick="banUser('${m.uid}', 15)" title="Mute 15m" style="background:#0a0a0a;color:#eb6a28;border:none;padding:0 3px;cursor:pointer;">M15</button>
+         <button onclick="banUser('${m.uid}', 5256000)" title="Permaban" style="background:#0a0a0a;color:#cf1717;border:none;padding:0 3px;cursor:pointer;">BAN</button>`;
+    hdr.insertBefore(tools, hdr.lastElementChild);
+  }
+  return d;
+};
+
+const origLoad = load;
+load = async function() {
+  try {
+    const bRes = await fetch(`${BASE}/bans.json`);
+    activeBans = (await bRes.json()) || {};
+  } catch (e) {}
+  await origLoad();
+};
+
+const origFormSubmit = f.onsubmit;
+f.onsubmit = async (e) => {
+  e.preventDefault();
+  if (!sec && activeBans[myUid] && activeBans[myUid].until > Date.now()) {
+    const leftMin = Math.ceil((activeBans[myUid].until - Date.now()) / 60000);
+    showSpamWarn(leftMin > 10000 ? "// You are permanently banned" : `// Muted: ${leftMin}m left`);
+    return;
+  }
+  const origFetch = window.fetch;
+  window.fetch = (url, opts) => {
+    if (opts && opts.method === "POST" && typeof url === "string" && url.includes("/messages.json")) {
+      const b = JSON.parse(opts.body);
+      b.uid = myUid;
+      opts.body = JSON.stringify(b);
+    }
+    return origFetch(url, opts);
+  };
+  try { await origFormSubmit(e); } finally { window.fetch = origFetch; }
+};
