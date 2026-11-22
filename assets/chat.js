@@ -76,7 +76,7 @@ function makeMsgNode([id, m]) {
   const a = (m.author || "guest").replace(/</g, "&lt;");
   const b = m.isAdmin ? `<span style="color:#cf1717;background:#0a0a0a;padding:0 4px;">DEFrAS ★</span>` : `<span>${a}</span>`;
   const x = sec ? `<button onclick="delMsg('${id}')" style="margin-left:auto;background:#0a0a0a;color:#cf1717;border:none;cursor:pointer;font-weight:bold;padding:0 5px;">×</button>` : "";
-  const timeStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "";
+  const timeStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', timeZone:'UTC'}) : "";
   d.innerHTML = `<div class="msg-header"><div class="msg-avatar">${m.isAdmin ? "★" : "◈"}</div>${b} <span style="font-size:11px;opacity:0.75;">${timeStr}</span>${x}</div><div class="msg-text"></div>`;
   d.querySelector(".msg-text").textContent = m.text;
   return d;
@@ -219,7 +219,7 @@ renderArchive = function() {
   const filtered = allEntries.filter(([_, m]) => {
     if (archTab === "admin" && !m.isAdmin) return false;
     if (archTab === "guest" && m.isAdmin) return false;
-    const tStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
+    const tStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', timeZone:'UTC'}) : "";
     return (m.text || "").toLowerCase().includes(q) || (m.isAdmin ? "defras admin " : (m.author || "guest").toLowerCase()).includes(q) || tStr.includes(q);
   });
   document.getElementById("archCount").textContent = `// ARCHIVE (${filtered.length} total)`;
@@ -227,20 +227,20 @@ renderArchive = function() {
 
   const groups = {};
   filtered.forEach(item => {
-    const dKey = item[1].ts ? new Date(item[1].ts).toLocaleDateString("ru-RU") : "Unknown date";
+    const dKey = item[1].ts ? new Date(item[1].ts).toLocaleDateString("ru-RU", {timeZone:"UTC"}) : "Unknown date";
     (groups[dKey] = groups[dKey] || []).push(item);
   });
 
   Object.entries(groups).forEach(([date, items]) => {
     const hdr = document.createElement("div");
     hdr.style.cssText = "background:#0a0a0a;color:#eb6a28;padding:3px 8px;font-size:12px;font-weight:bold;margin-top:4px;display:flex;justify-content:space-between;";
-    hdr.innerHTML = `<span>// ${date}</span><span>${items.length} msg</span>`;
+    hdr.innerHTML = `<span>// ${date} [UTC]</span><span>${items.length} msg</span>`;
     box.appendChild(hdr);
 
     items.forEach(([id, m]) => {
       const row = document.createElement("div");
       row.style.cssText = "background:rgba(10,10,10,0.16);border-left:3px solid " + (m.isAdmin ? "#cf1717" : "#0a0a0a") + ";padding:4px 8px;font-size:12px;";
-      const tStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "--:--";
+      const tStr = m.ts ? new Date(m.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', timeZone:'UTC'}) : "--:--";
       const nick = m.isAdmin ? `<b style="background:#0a0a0a;color:#cf1717;padding:0 4px;">DEFrAS ★</b>` : `<b>${(m.author || "guest").replace(/</g, "&lt;")}</b>`;
       const del = sec ? `<button onclick="delMsg('${id}')" style="float:right;background:#0a0a0a;color:#cf1717;border:none;cursor:pointer;font-weight:bold;padding:0 5px;">×</button>` : "";
       row.innerHTML = `<div><span style="opacity:0.8;">[${tStr}]</span> ${nick}: ${del}</div><div style="color:#f4f4f4;font-weight:bold;margin-top:2px;word-break:break-word;"></div>`;
