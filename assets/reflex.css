@@ -24,7 +24,7 @@
   content: "";
   position: absolute;
   top: 0; bottom: 0; left: -11px; width: 11px;
-  background: rgba(54, 62, 125, 0.42);
+  background: rgba(54, 62, 125, 0.35);
   mix-blend-mode: multiply;
   pointer-events: none;
   z-index: 6;

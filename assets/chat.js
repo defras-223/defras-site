@@ -463,7 +463,7 @@ let tw=220,cw=220,dg=0;const st=document.querySelector(".red-stripe"),rs=documen
 
 // Двухуровневая тень по высоте: длинная (28px) на фоне ПОД карточками, короткая (11px) НАД карточками
 const bgShadow = document.createElement("div");
-bgShadow.style.cssText = "position:fixed;top:118px;bottom:0;width:28px;background:rgba(54,62,125,0.52);mix-blend-mode:multiply;pointer-events:none;z-index:1;";
+bgShadow.style.cssText = "position:fixed;top:118px;bottom:0;width:28px;background:rgba(54,62,125,0.43);mix-blend-mode:multiply;pointer-events:none;z-index:1;";
 document.body.appendChild(bgShadow);
 (function syncShadow() {
   const rs = document.querySelector(".right-sidebar");
